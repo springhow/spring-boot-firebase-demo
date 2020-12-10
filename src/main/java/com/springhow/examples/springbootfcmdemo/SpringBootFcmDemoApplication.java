@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
+import java.util.List;
 
 @SpringBootApplication
 public class SpringBootFcmDemoApplication {
@@ -22,8 +23,13 @@ public class SpringBootFcmDemoApplication {
                 .builder()
                 .setCredentials(googleCredentials)
                 .build();
-        FirebaseApp app = FirebaseApp.initializeApp(firebaseOptions, "my-app");
-        return FirebaseMessaging.getInstance(app);
+        List<FirebaseApp> apps =  FirebaseApp.getApps();
+        if (apps.size() < 1) {
+            FirebaseApp app = FirebaseApp.initializeApp(firebaseOptions, "my-app");
+            return FirebaseMessaging.getInstance(app);
+        } else {
+            return FirebaseMessaging.getInstance(apps.get(0));
+        }
     }
 
     public static void main(String[] args) {
